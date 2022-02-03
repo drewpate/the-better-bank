@@ -1,6 +1,6 @@
 const express = require("express");
 const cors = require("cors");
-const dal = require("./dal");
+const dal = require("../controllers/dal.js");
 const app = express();
 
 const PORT = process.env.PORT || 5000;
