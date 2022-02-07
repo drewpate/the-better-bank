@@ -22,7 +22,7 @@ const db = mongoose.connection;
 //create new user. this is a refactor to async await syntax
 async function create(username, email, password) {
   const collection = await db.collection("user");
-  const doc = {
+  const newUser = {
     username,
     email,
     password,
@@ -32,8 +32,8 @@ async function create(username, email, password) {
   try {
     //create salt & hash
     const salt = await bcrypt.genSalt(10);
-    doc.password = await bcrypt.hash(doc.password, salt);
-    return collection.insertOne(doc, { w: 1 });
+    newUser.password = await bcrypt.hash(newUser.password, salt);
+    return collection.insertOne(newUser, { w: 1 });
   } catch (err) {
     throw new Error(err.message);
   }
