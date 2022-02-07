@@ -11,7 +11,7 @@ app.use(cors());
 app.use(express.json());
 
 const userRouter = require("./routes/api/users");
-// //use routes
+// use routes
 app.use("/users", userRouter);
 
 app.listen(PORT, () => {

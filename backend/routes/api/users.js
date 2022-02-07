@@ -1,21 +1,38 @@
 const express = require("express");
 const router = express.Router();
 const dal = require("../../controllers/dal");
+const dotenv = require("dotenv");
 
-//create new user
-router.post("/create/:username/:email/:password", (req, res) => {
-  dal
-    .create(req.params.username, req.params.email, req.params.password)
-    .then((user) => {
-      console.log(user);
-      res.json(user);
-    });
+dotenv.config();
+
+//  @route POST /users/create
+//  @desc  Create User Account
+//  @access Public
+//  create new user
+router.post("/create", (req, res) => {
+  //Check for existing user
+  dal.findOne(req.body.email).then((user) => {
+    dal
+      .create(req.body.username, req.body.email, req.body.password)
+      .then((user) => {
+        res.status(200).json({ msg: "Account Successfully created" });
+      });
+  });
+});
+
+//  @route POST /users/login
+//  @desc  Login to User Account
+//  @access Public
+//login
+router.post("/login", (req, res) => {
+  dal.login(req.body.username, req.body.password).then((user) => {
+    res.json({ status: "ok", user: true });
+  });
 });
 
 //get all users
 router.get("/all", (req, res) => {
   dal.all(req.params).then((users) => {
-    console.log(users);
     res.send(users);
   });
 });

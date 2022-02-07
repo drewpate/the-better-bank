@@ -1,24 +1,12 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
+const bcrypt = require("bcryptjs");
+
 dotenv.config();
-
-//if connecting with MongoClient
-
-// const MongoClient = require("mongodb").MongoClient;
-// const uri =
-//   "your_mongo_uri_here";
-// let db = null;
-
-// MongoClient.connect(uri, { useUnifiedTopology: true }, function (err, client) {
-//   console.log("Connected successfully to db server");
-
-//   // connect to myproject database
-//   db = client.db("drewsbankingapp");
-// });
 
 //connect with mongoose
 mongoose.connect(
-  process.env.MONGODB_CONNECTION_STRING,
+  process.env.MONGODB_URI,
   {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -42,7 +30,9 @@ async function create(username, email, password) {
     savingsBalance: 0,
   };
   try {
-    console.log(doc);
+    //create salt & hash
+    const salt = await bcrypt.genSalt(10);
+    doc.password = await bcrypt.hash(doc.password, salt);
     return collection.insertOne(doc, { w: 1 });
   } catch (err) {
     throw new Error(err.message);
@@ -81,6 +71,15 @@ async function find(email) {
 //   });
 // }
 
+async function findOne(email) {
+  try {
+    return db.collection("user").findOne({ email });
+  } catch {
+    console.log(err);
+    throw new Error(err.message);
+  }
+}
+
 async function update(username, amount) {
   try {
     await db
@@ -111,4 +110,4 @@ async function deleteUser(username) {
   }
 }
 
-module.exports = { create, find, update, all, deleteUser };
+module.exports = { create, find, findOne, update, all, deleteUser };
