@@ -13,11 +13,18 @@ const UserSchema = new Schema({
     required: true,
     unique: true,
   },
-  Password: {
+  password: {
     type: String,
     required: true,
   },
-  $inc: { checkingBalance: { type: Number }, savingsBalance: { type: Number } },
+  checkingBalance: {
+    type: Number,
+    default: 0,
+  },
+  savingsBalance: {
+    type: Number,
+    default: 0,
+  },
 });
 
 module.exports = User = mongoose.model("user", UserSchema);
