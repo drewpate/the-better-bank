@@ -7,6 +7,7 @@ import background from "./assets/images/moneyjar.jpeg";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import MyAccount from "./components/MyAccount";
+import Login from "./components/Login";
 import Transactions from "./components/Transactions";
 import AllAccounts from "./components/AllAccounts";
 import App from "./App";
@@ -27,6 +28,7 @@ ReactDOM.render(
           <Route path="/" element={<App />}>
             <Route path="/home" element={<Home />} />
             <Route path="/myaccount" element={<MyAccount />} />
+            <Route path="/login" element={<Login />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/allaccounts" element={<AllAccounts />} />
           </Route>

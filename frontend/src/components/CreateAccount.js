@@ -2,22 +2,22 @@ import React from "react";
 import { Formik, Form, Field } from "formik";
 import Card from "./Card";
 import { useNavigate } from "react-router-dom";
-
 import * as Yup from "yup";
 
 function CreateAccount() {
   const [show, setShow] = React.useState(true);
+
   let navigate = useNavigate();
 
   const formSchema = Yup.object().shape({
     username: Yup.string()
       .min(6, "Too short")
-      .max(50, "Too long")
+      .max(20, "Too long")
       .required("Required"),
     email: Yup.string()
       .email("Please enter a valid email")
       .required("Required"),
-    password: Yup.string().min(8, "Too shoort").required("Required"),
+    password: Yup.string().min(8, "Too short").required("Required"),
   });
 
   return (
@@ -38,13 +38,20 @@ function CreateAccount() {
               onSubmit={(values, { resetForm }) => {
                 (async () => {
                   try {
-                    await fetch(
-                      `/account/create/${values.username}/${values.email}/${values.password}`,
-                      { method: "POST" }
-                    )
-                      .then((response) => response.text())
-                      .then((data) => {
-                        console.log(data);
+                    await fetch("users", {
+                      method: "POST",
+                      headers: {
+                        "Content-Type": "application/json",
+                      },
+                      body: JSON.stringify({
+                        username: `${values.username}`,
+                        email: `${values.email}`,
+                        password: `${values.password}`,
+                      }),
+                    })
+                      .then((response) => response.json())
+                      .then((json) => {
+                        console.log(json);
                       });
                   } catch (err) {
                     console.log(err);
@@ -52,6 +59,7 @@ function CreateAccount() {
                   }
                 })();
                 resetForm();
+                navigate("/login");
                 // setShow(false);
               }}
             >
@@ -65,7 +73,7 @@ function CreateAccount() {
                     placeholder="Enter username"
                     autoComplete="new-username"
                   />
-                  {errors.name && touched.name ? (
+                  {errors.username && touched.username ? (
                     <div
                       style={{
                         color: "red",
@@ -73,7 +81,7 @@ function CreateAccount() {
                         fontSize: "x-small",
                       }}
                     >
-                      {errors.name}
+                      {errors.username}
                     </div>
                   ) : null}
                   <br />
@@ -121,7 +129,6 @@ function CreateAccount() {
                   <button
                     type="submit"
                     className="btn btn-outline-primary w-100"
-                    disabled={!(isValid && dirty)}
                   >
                     Submit
                   </button>

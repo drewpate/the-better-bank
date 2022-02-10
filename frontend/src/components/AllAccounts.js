@@ -6,7 +6,7 @@ const AllAccounts = () => {
   const [data, setData] = useState([]);
   React.useEffect(() => {
     //fetch all account from API
-    fetch("/account/all")
+    fetch("api/users")
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
