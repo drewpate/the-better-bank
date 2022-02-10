@@ -13,8 +13,8 @@ app.use(cors());
 app.use(express.json());
 
 // use routes
-app.use("/api/users", require("./routes/api/users-route"));
-app.use("/api/users/auth", require("./routes/api/auth-route"));
+app.use("/api/users", userRouter);
+app.use("/api/users/auth", authRouter);
 
 app.listen(PORT, () => {
   console.log(`Running on port ${PORT}`);
