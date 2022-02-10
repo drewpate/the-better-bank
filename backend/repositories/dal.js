@@ -1,7 +1,6 @@
 const mongoose = require("mongoose");
 const dotenv = require("dotenv");
 const bcrypt = require("bcryptjs");
-const jwt = require("jsonwebtoken");
 const User = require("../models/User");
 
 dotenv.config();
@@ -43,16 +42,12 @@ async function create(username, email, password) {
 
 async function userLogin(username, password) {
   const user = await User.findOne({ username });
-
-  if (!user) throw Error("User does not exist");
+  if (!user) throw Error("Invalid credentials");
 
   const isMatch = await bcrypt.compare(password, user.password);
-  if (!isMatch) throw Error("Cannot sign token");
+  if (!isMatch) throw Error("Invalid credentials");
 
-  const token = jwt.sign({ id: user._id, username }, process.env.JWT_SECRET, {
-    expiresIn: 3600,
-  });
-  if (!token) throw Error("Couldnt sign the token");
+  return user;
 }
 
 //get all users

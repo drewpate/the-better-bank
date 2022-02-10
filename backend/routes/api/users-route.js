@@ -4,7 +4,6 @@ const dotenv = require("dotenv");
 const authMiddleWare = require("../../middleware/auth-middleware");
 
 const {
-  userLogin,
   getAllUsers,
   getOneUser,
   deleteUser,
@@ -16,9 +15,6 @@ dotenv.config();
 
 //create user
 router.post("/", createUser);
-
-//login user
-router.post("/login", userLogin);
 
 //get all users
 router.get("/", getAllUsers);

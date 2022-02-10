@@ -1,15 +1,20 @@
 const dal = require("../repositories/dal");
+const jwt = require("jsonwebtoken");
 
-const userLogin = (req, res) => {
+async function userLogin(req, res) {
   const { username, password } = req.body;
-
-  if (!username || !password) {
-    res.status(400).json({ msg: "Please enter all fields" });
+  try {
+    const user = await dal.userLogin(username, password);
+    if (user) {
+      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+        expiresIn: 3600,
+      });
+      return res.status(200).json({ token: token, user: user });
+    }
+  } catch (error) {
+    res.status(500).json({ msg: error.message });
   }
-  dal.userLogin(req.body.username, req.body.password).then((user) => {
-    return res.status(200).json({ message: "Login successful" });
-  });
-};
+}
 
 const getAllUsers = (req, res) => {
   dal.all(req.params).then((users) => {
