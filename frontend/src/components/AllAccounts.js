@@ -2,16 +2,21 @@ import React from "react";
 import { useState } from "react";
 import Card from "./Card";
 
+
 const AllAccounts = () => {
   const [data, setData] = useState([]);
   React.useEffect(() => {
     //fetch all account from API
-    fetch("api/users")
+    try {
+      fetch("api/users", { headers: { Authorization:localStorage.getItem('SavedToken')}})
       .then((res) => res.json())
       .then((data) => {
         console.log(data);
         setData({ users: data });
       });
+    } catch (error) {
+      console.log(error.message); 
+    }
   }, []);
 
   return (

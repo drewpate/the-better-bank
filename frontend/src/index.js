@@ -3,7 +3,6 @@ import ReactDOM from "react-dom";
 import "./index.css";
 import "bootstrap/dist/css/bootstrap.min.css";
 import background from "./assets/images/moneyjar.jpeg";
-
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Home from "./components/Home";
 import MyAccount from "./components/MyAccount";
@@ -13,6 +12,7 @@ import AllAccounts from "./components/AllAccounts";
 import App from "./App";
 
 ReactDOM.render(
+
   <React.StrictMode>
     <div
       style={{
@@ -25,7 +25,7 @@ ReactDOM.render(
     >
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App />}>
+          <Route path="/" element={<App element={<Home />} />}>
             <Route path="/home" element={<Home />} />
             <Route path="/myaccount" element={<MyAccount />} />
             <Route path="/login" element={<Login />} />

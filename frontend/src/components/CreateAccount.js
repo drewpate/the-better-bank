@@ -38,7 +38,7 @@ function CreateAccount() {
               onSubmit={(values, { resetForm }) => {
                 (async () => {
                   try {
-                    await fetch("users", {
+                    await fetch("api/users", {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json",
@@ -59,8 +59,7 @@ function CreateAccount() {
                   }
                 })();
                 resetForm();
-                navigate("/login");
-                // setShow(false);
+                setShow(false);
               }}
             >
               {({ errors, touched, isValid, dirty }) => (
@@ -132,12 +131,19 @@ function CreateAccount() {
                   >
                     Submit
                   </button>
+                  <br/>
+                  <br/>
                   <button
                     type="reset"
                     className="btn btn-outline-primary mt-1 w-100"
                   >
                     Clear
                   </button>
+                  <br />
+                  <br />
+                  All ready have an account? 
+                  <br/> 
+                  <a href="/login" style={{color: "blue"}}>Login</a>
                 </Form>
               )}
             </Formik>

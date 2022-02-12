@@ -6,7 +6,7 @@ async function userLogin(req, res) {
   try {
     const user = await dal.userLogin(username, password);
     if (user) {
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+      const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
         expiresIn: 3600,
       });
       return res.status(200).json({ token: token, user: user });
@@ -24,9 +24,9 @@ const getAllUsers = (req, res) => {
 };
 
 const getOneUser = (req, res) => {
-  dal.findOne(req.params.email).then((user) => {
+  dal.findOne(req.params.username).then((user) => {
     if (!user) return res.status(400).json({ msg: "No account found" });
-    res.status(200).json({ msg: user });
+    res.status(200).json(user);
   });
 };
 

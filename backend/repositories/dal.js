@@ -53,7 +53,7 @@ async function userLogin(username, password) {
 //get all users
 async function all() {
   try {
-    return db.collection("users").find({}).toArray();
+    return await User.find({});
   } catch (err) {
     console.log(err);
     throw new Error(err.message);
@@ -71,8 +71,8 @@ async function find(email) {
 }
 
 //get one user by email.
-async function findOne(email) {
-  const user = User.findOne({ email });
+async function findOne(username) {
+  const user = User.findOne({ username });
   return user;
 }
 //update user checking/savings
