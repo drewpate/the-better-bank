@@ -23,13 +23,11 @@ function App() {
     <div className="App">
       <Navigation />
       <Routes>
-          <Route path="/">
             <Route path="/home" element={<Home />} />
             <Route path="/myaccount" element={<MyAccount />} />
             <Route path="/login" element={<Login />} />
             <Route path="/transactions" element={<Transactions />} />
             <Route path="/allaccounts" element={<AllAccounts />} />
-          </Route>
         </Routes>
       <Outlet />
     </div>

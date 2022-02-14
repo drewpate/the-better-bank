@@ -17,8 +17,6 @@ dotenv.config();
 //create user
 router.post("/", createUser);
 
-router.post("/auth", checkUser);
-
 //login user
 router.post("/login", userLogin);
 

@@ -8,10 +8,13 @@ function Withdraw() {
   
   const [data, setData] = useState([]);
   const [balance, setBalance] = useState([]);
-
+  const [showError, setShowError] = useState(false);
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  
   React.useEffect(() => {
-    const username = JSON.parse(localStorage.getItem('username'));
+    const username = localStorage.getItem('username');
 
+    
     try {
       fetch(`api/users/account/${username}`, {
         headers: {
@@ -25,11 +28,10 @@ function Withdraw() {
         throw new Error (err.message)
       };
       setBalance(data.checkingBalance);
+      console.log(data.checkingBalance);
     }, [data.checkingBalance])
 
     
-    const [showError, setShowError] = useState(false);
-    const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
     
     
@@ -56,34 +58,35 @@ function Withdraw() {
               withdrawAmount: 0,
             }}
             validationSchema={WithdrawSchema}
-            onSubmit={(values) => {
+            onSubmit={(values, {resetForm}) => {
               (async () => {
-                try {
-                  if (values.withdrawAmount > data.checkingBalance)
-                    setShowError(true);
-                    setShowSuccessMessage(false);
-                    const username = JSON.parse(localStorage.getItem('username'));
-                    fetch("api/users/transactions", {
-                      method: "PUT",
-                      headers: {
-                        "Content-Type": "application/json",
-                        Authorization: localStorage.getItem('SavedToken')},
-                      body: JSON.stringify
-                      ({
-                          username: `${username}`,
-                          checkingBalance: - JSON.parse(`${values.withdrawAmount}`),
-                          savingsBalance:  - JSON.parse(`${values.withdrawAmount}`)
-                      })
+              try {
+                if (values.withdrawAmount > data.checkingBalance)
+                  setShowError(true);
+                  setShowSuccessMessage(false);
+                  const username = localStorage.getItem('username');
+                  fetch("api/users/transactions", {
+                    method: "PUT",
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: localStorage.getItem('SavedToken')},
+                    body: JSON.stringify
+                    ({
+                        username: `${username}`,
+                        checkingBalance: - JSON.parse(`${values.withdrawAmount}`),
+                        savingsBalance:  - JSON.parse(`${values.withdrawAmount}`)
                     })
-                    setBalance(data.checkingBalance - values.withdrawAmount);
-                  } catch (error) {
-                    throw new Error("Withdraw not successful");
-                  }
-                })();
-              setShowSuccessMessage(true);
-              setShowError(false);
-              console.log('you withdrew' + values.withdrawAmount)
-            }}
+                  })
+                  setBalance(data.checkingBalance - values.withdrawAmount);
+                } catch (error) {
+                  throw new Error(error.message);
+                }
+              })();
+            setShowSuccessMessage(true);
+            setShowError(false);
+            resetForm();
+            console.log('you withdrew' + values.withdrawAmount)
+          }}
           >
             
             {({  isValid, dirty }) => (

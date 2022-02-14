@@ -1,12 +1,21 @@
 import React from "react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "react-bootstrap";
+import { useNavigate } from "react-router-dom";
 import Deposit from "./Deposit";
 import Withdraw from "./Withdraw";
 import Transfer from "./Transfer";
 
 const Transactions = () => {
   const [showTransaction, setShowTransaction] = useState("");
+  let navigate = useNavigate()
+  
+  useEffect(() => {
+    
+    let token = localStorage.getItem('SavedToken');
+    if(!token) navigate('/login')
+  }, [navigate])
+
 
   const handleShow = (e) => {
     let whichButton = e.target.id;

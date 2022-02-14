@@ -1,11 +1,16 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Card from "./Card";
 
 
 const AllAccounts = () => {
   const [data, setData] = useState([]);
+  let navigate = useNavigate()
   React.useEffect(() => {
+    //check for user in localstorage
+    let token = localStorage.getItem('SavedToken')
+    if(!token) return navigate('/login')
     //fetch all account from API
     try {
       fetch("api/users", { headers: { Authorization:localStorage.getItem('SavedToken')}})
@@ -17,7 +22,7 @@ const AllAccounts = () => {
     } catch (error) {
       console.log(error.message); 
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <>

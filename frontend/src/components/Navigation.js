@@ -6,6 +6,7 @@ const Navigation = () => {
 
   const [currentUser, setCurrentUser] = useState();
   const user = localStorage.getItem('username');
+  let navigate = useNavigate();
 
 
   useEffect(()=> {
@@ -17,20 +18,12 @@ const Navigation = () => {
     fetchCurrentUser();
   }, [user]);
 
-//   const fetchCurrentUser = useCallback(() => {
-//     if (!user) return;
-//     setCurrentUser(user);
-//     console.log('hi from below');
-
-//   }, []);
-// useEffect(fetchCurrentUser, [fetchCurrentUser]);
-
-  let navigate = useNavigate();
 
   
   function handleLogout(){
     navigate("/login");
-    localStorage.clear()
+    localStorage.setItem('username', "");
+    localStorage.setItem('SavedToken', "")
     setCurrentUser();
   }
   
@@ -48,7 +41,7 @@ const Navigation = () => {
               <Nav.Link href="/transactions">Transactions</Nav.Link>
               <Nav.Link href="/allaccounts">All Accounts</Nav.Link>
             </Nav>
-            {currentUser? (<Badge>{currentUser}</Badge>
+            {currentUser? (<h4><Badge>{currentUser}</Badge></h4>
             
             ) : null}
             <Button

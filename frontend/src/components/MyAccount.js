@@ -1,13 +1,16 @@
 import React, {useState} from "react";
+import { useNavigate } from "react-router-dom";
 import Card from "./Card";
 
 
 const MyAccount = () => {
-
+  let navigate = useNavigate()
   const [data, setData] = useState([]);
   
   React.useEffect(() => {
     const username = localStorage.getItem('username');
+    if(!username) return navigate('/login');
+
     try {
       fetch(`api/users/account/${username}`, {
         headers: {
@@ -22,7 +25,7 @@ const MyAccount = () => {
         throw new Error (err.message)
       };
       
-  }, [])
+  }, [navigate])
 
   return (
     <>
