@@ -1,17 +1,30 @@
-import React from "react";
-import { Nav, Navbar, Container,  Button } from "react-bootstrap";
+import React, {useEffect, useState} from "react";
+import { Nav, Navbar, Container,  Button, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const Navigation = () => {
 
-   
+  const [currentUser, setCurrentUser] = useState();
+  const [show, setShow] = useState(false);
+
+  useEffect(()=> {
+
+    const fetchCurrentUser = async () => {
+      const user = localStorage.getItem('username');
+      if(!user) return null;
+      JSON.parse(user);
+      setCurrentUser(user);
+      setShow(true);
+    };
+    fetchCurrentUser();
+  }, [currentUser]);
 
   let navigate = useNavigate();
+
   
   function handleLogout(){
-    localStorage.setItem('SavedToken', "");
-    localStorage.setItem('username', "")
     navigate("/login");
+    localStorage.clear()
   }
   
 
@@ -28,6 +41,7 @@ const Navigation = () => {
               <Nav.Link href="/transactions">Transactions</Nav.Link>
               <Nav.Link href="/allaccounts">All Accounts</Nav.Link>
             </Nav>
+            {show? (<Badge>{'No user logged in'}</Badge>) : (<Badge>{currentUser}</Badge>) }
             <Button
               variant="outline-sucess"
               onClick={() => {

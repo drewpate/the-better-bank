@@ -82,6 +82,7 @@ function Withdraw() {
                 })();
               setShowSuccessMessage(true);
               setShowError(false);
+              console.log('you withdrew' + values.withdrawAmount)
             }}
           >
             

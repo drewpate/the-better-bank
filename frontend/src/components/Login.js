@@ -1,13 +1,16 @@
-import React from "react";
+import React, {useState} from "react";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
+
+
 import Card from "./Card";
 import * as Yup from "yup";
 
 
 const Login = () => {
-
-  const [show, setShow] = React.useState(true);
+  
+  const [show, setShow] = useState(true);
+  
 
  
   const loginSchema = Yup.object().shape({
@@ -19,6 +22,32 @@ const Login = () => {
   });
 
   let navigate = useNavigate();
+  
+  const handleLogin = (values)=> {
+    
+    try {
+        fetch("api/users/login", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            username: `${values.username}`,
+            password: `${values.password}`,
+          }),
+        })
+        .then(res => res.json())
+        .then(res => {
+          console.log(res)
+          let token = res.token;
+          localStorage.setItem('SavedToken', 'Bearer ' + token);
+          localStorage.setItem('username', JSON.stringify(values.username));
+      });
+
+        } catch (error) {
+          throw new Error("Something went wrong when logging in.")
+        }
+  }
 
   return (
     <div>
@@ -33,31 +62,8 @@ const Login = () => {
             }}
             validationSchema={loginSchema}
             onSubmit={(values) => {
-              (async () => {
-                
-                try {
-                  fetch("api/users/login", {
-                    method: "POST",
-                    headers: {
-                      "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify({
-                      username: `${values.username}`,
-                      password: `${values.password}`,
-                    }),
-                  })
-                  .then(res => res.json())
-                  .then(res => {
-                    console.log(res)
-                    let token = res.token;
-                    localStorage.setItem('SavedToken', 'Bearer ' + token);
-                    localStorage.setItem('username', JSON.stringify(values.username));
-                });
-                  } catch (error) {
-                    throw new Error("Something went wrong when logging in.")
-                  }
-                })();
-                setShow(false);
+                  handleLogin(values);
+                  setShow(false);
             }}
           >
             {({ errors, touched, isValid, dirty }) => (
