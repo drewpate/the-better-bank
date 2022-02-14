@@ -7,8 +7,7 @@ const MyAccount = () => {
   const [data, setData] = useState([]);
   
   React.useEffect(() => {
-    const username = JSON.parse(localStorage.getItem('username'));
-    // const username = localStorage.getItem('username')
+    const username = localStorage.getItem('username');
     try {
       fetch(`api/users/account/${username}`, {
         headers: {

@@ -41,7 +41,7 @@ const Login = () => {
           console.log(res)
           let token = res.token;
           localStorage.setItem('SavedToken', 'Bearer ' + token);
-          localStorage.setItem('username', JSON.stringify(values.username));
+          localStorage.setItem('username', values.username);
       });
 
         } catch (error) {

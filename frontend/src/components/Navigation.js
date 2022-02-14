@@ -5,19 +5,25 @@ import { useNavigate } from "react-router-dom";
 const Navigation = () => {
 
   const [currentUser, setCurrentUser] = useState();
-  const [show, setShow] = useState(false);
+  const user = localStorage.getItem('username');
+
 
   useEffect(()=> {
 
     const fetchCurrentUser = async () => {
-      const user = localStorage.getItem('username');
       if(!user) return null;
-      JSON.parse(user);
       setCurrentUser(user);
-      setShow(true);
     };
     fetchCurrentUser();
-  }, [currentUser]);
+  }, [user]);
+
+//   const fetchCurrentUser = useCallback(() => {
+//     if (!user) return;
+//     setCurrentUser(user);
+//     console.log('hi from below');
+
+//   }, []);
+// useEffect(fetchCurrentUser, [fetchCurrentUser]);
 
   let navigate = useNavigate();
 
@@ -25,6 +31,7 @@ const Navigation = () => {
   function handleLogout(){
     navigate("/login");
     localStorage.clear()
+    setCurrentUser();
   }
   
 
@@ -41,7 +48,9 @@ const Navigation = () => {
               <Nav.Link href="/transactions">Transactions</Nav.Link>
               <Nav.Link href="/allaccounts">All Accounts</Nav.Link>
             </Nav>
-            {show? (<Badge>{'No user logged in'}</Badge>) : (<Badge>{currentUser}</Badge>) }
+            {currentUser? (<Badge>{currentUser}</Badge>
+            
+            ) : null}
             <Button
               variant="outline-sucess"
               onClick={() => {
