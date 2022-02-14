@@ -1,9 +1,10 @@
 import React from "react";
-import { Nav, Navbar, Container, Badge, Button } from "react-bootstrap";
+import { Nav, Navbar, Container,  Button } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
 const Navigation = () => {
 
+   
 
   let navigate = useNavigate();
   
@@ -12,18 +13,7 @@ const Navigation = () => {
     localStorage.setItem('username', "")
     navigate("/login");
   }
-
- 
-  function DisplayName(props) {
-    return (
-      <h4>
-        <Badge> {props.username} </Badge>
-      </h4>
-    );
-  }
-
   
-
 
   return (
     <div>
@@ -38,7 +28,6 @@ const Navigation = () => {
               <Nav.Link href="/transactions">Transactions</Nav.Link>
               <Nav.Link href="/allaccounts">All Accounts</Nav.Link>
             </Nav>
-            <DisplayName username="user" />
             <Button
               variant="outline-sucess"
               onClick={() => {

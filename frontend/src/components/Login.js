@@ -39,8 +39,7 @@ const Login = () => {
                   fetch("api/users/login", {
                     method: "POST",
                     headers: {
-                      "Content-Type": "application/json",
-                      
+                      "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
                       username: `${values.username}`,
@@ -49,13 +48,13 @@ const Login = () => {
                   })
                   .then(res => res.json())
                   .then(res => {
+                    console.log(res)
                     let token = res.token;
                     localStorage.setItem('SavedToken', 'Bearer ' + token);
                     localStorage.setItem('username', JSON.stringify(values.username));
                 });
                   } catch (error) {
-                    console.log(error);
-                    if(error) navigate(null)
+                    throw new Error("Something went wrong when logging in.")
                   }
                 })();
                 setShow(false);
@@ -104,7 +103,7 @@ const Login = () => {
                     {errors.password}
                   </div>
                 ) : null}
-                <button type="submit" className="btn btn-outline-primary w-100">
+                <button type="submit" disabled={!(isValid && dirty)} className="btn btn-outline-primary w-100">
                   Submit
                 </button>
               </Form>

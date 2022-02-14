@@ -22,10 +22,10 @@ ReactDOM.render(
         width: "100vw",
         height: "100vh",
       }}
-    >
+    > 
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<App element={<Home />} />}>
+          <Route path="/" element={<App />}>
             <Route path="/home" element={<Home />} />
             <Route path="/myaccount" element={<MyAccount />} />
             <Route path="/login" element={<Login />} />
