@@ -76,7 +76,7 @@ async function findOne(username) {
   return user;
 }
 //update user checking/savings
-async function updateUserBalances(username, checkingAmount, savingsAmount) {
+async function updateUserBalance(username, checkingAmount, savingsAmount) {
   try {
     await db.collection("users").findOneAndUpdate(
       { username },
@@ -113,7 +113,7 @@ module.exports = {
   create,
   find,
   findOne,
-  updateUserBalances,
+  updateUserBalance,
   all,
   deleteUser,
   userLogin,

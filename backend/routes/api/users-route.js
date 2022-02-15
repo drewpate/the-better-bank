@@ -8,7 +8,7 @@ const {
   getAllUsers,
   getOneUser,
   deleteUser,
-  updateUserBalances,
+  updateUserBalance,
   createUser,
 } = require("../../controllers/users-controller");
 
@@ -27,7 +27,7 @@ router.get("/", authMiddleWare, getAllUsers);
 router.get("/account/:username", authMiddleWare, getOneUser);
 
 //update checking/savings
-router.put("/transactions", authMiddleWare, updateUserBalances);
+router.put("/transactions", authMiddleWare, updateUserBalance);
 
 //delete user account
 router.delete("/:username", authMiddleWare, deleteUser);

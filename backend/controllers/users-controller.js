@@ -30,9 +30,9 @@ const getOneUser = (req, res) => {
   });
 };
 
-const updateUserBalances = (req, res) => {
+const updateUserBalance = (req, res) => {
   dal
-    .updateUserBalances(
+    .updateUserBalance(
       req.body.username,
       req.body.checkingBalance,
       req.body.savingsBalance
@@ -79,6 +79,6 @@ module.exports = {
   getAllUsers,
   getOneUser,
   deleteUser,
-  updateUserBalances,
+  updateUserBalance,
   createUser,
 };
