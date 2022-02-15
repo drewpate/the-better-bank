@@ -27,13 +27,13 @@ const Home = () => {
         <Card.Title>Welcome to the Better Bank</Card.Title>
         <Card.Text>
           (The Bad Bank 2.0)
-          <br /> 
+          <br />
         </Card.Text>
         <Button variant="primary" onClick={handleShow} >
           Let's Get Started
         </Button>
       </Card.Body>
-    </Card> : <CreateAccount/>}
+      </Card> : <CreateAccount /> } { /* Might want to navigate to that page instead of rendering a page within a page*/}
       
   </div>
 )};

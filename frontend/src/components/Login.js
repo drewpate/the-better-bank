@@ -1,8 +1,6 @@
 import React, {useState} from "react";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
-
-
 import Card from "./Card";
 import * as Yup from "yup";
 
@@ -23,9 +21,8 @@ const Login = () => {
 
   let navigate = useNavigate();
   
-  const handleLogin = (values)=> {
-    
-    try {
+  const handleLogin = (values) => {
+    // Try catch does nothing because as far as I know everything is handled in the promise. Either then or catch will be run.
         fetch("api/users/login", {
           method: "POST",
           headers: {
@@ -40,13 +37,9 @@ const Login = () => {
         .then(res => {
           console.log(res)
           let token = res.token;
-          localStorage.setItem('SavedToken', 'Bearer ' + token);
+          localStorage.setItem('SavedToken', 'Bearer ' + token); // Not necessary to add the `Bearer` to the response token. This should be done by the backend.
           localStorage.setItem('username', values.username);
-      });
-
-        } catch (error) {
-          throw new Error("Something went wrong when logging in.")
-        }
+      }).catch(e => console.error('Error occurred on login', e));
   }
 
   return (
@@ -63,7 +56,7 @@ const Login = () => {
             validationSchema={loginSchema}
             onSubmit={(values) => {
                   handleLogin(values);
-                  setShow(false);
+                  setShow(false); // You may want to move this into the network request result. If the login was a failure it's best to leave it displayed.
             }}
           >
             {({ errors, touched, isValid, dirty }) => (

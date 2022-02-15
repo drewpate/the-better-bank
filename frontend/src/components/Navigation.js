@@ -9,22 +9,21 @@ const Navigation = () => {
   let navigate = useNavigate();
 
 
-  useEffect(()=> {
-
-    const fetchCurrentUser = async () => {
+  useEffect(() => {
+    // Strongly recommend moving this out of the useEffect and into a useCallback to prevent computer sounding like a jet engine
+    const fetchCurrentUser = () => {
       if(!user) return null;
-      setCurrentUser(user);
+      setCurrentUser(user); // Will cause infinite render loop in the case that there is a user signed in
     };
     fetchCurrentUser();
   }, [user]);
 
 
-  
-  function handleLogout(){
-    navigate("/login");
-    localStorage.setItem('username', "");
-    localStorage.setItem('SavedToken', "")
-    setCurrentUser();
+  function handleLogout() {
+    navigate("/login"); // Would recommend placing this after the below logic so we're able to do everything needed for a successful logout before the page is unloaded
+    localStorage.removeItem('username');
+    localStorage.removeItem('SavedToken'); // The localStorage API has built in methods to remove values https://developer.mozilla.org/en-US/docs/Web/API/Storage/removeItem
+    setCurrentUser([]); // Initialize back to the empty array rather than nothing
   }
   
 
@@ -41,14 +40,12 @@ const Navigation = () => {
               <Nav.Link href="/transactions">Transactions</Nav.Link>
               <Nav.Link href="/allaccounts">All Accounts</Nav.Link>
             </Nav>
-            {currentUser? (<h4><Badge>{currentUser}</Badge></h4>
+            {currentUser ? (<h4><Badge>{currentUser}</Badge></h4>
             
             ) : null}
             <Button
-              variant="outline-sucess"
-              onClick={() => {
-                handleLogout()
-              }}
+              variant="outline-success" // Minor spelling error
+              onClick={ handleLogout } // Slight simplification
             >
               Logout
             </Button>

@@ -37,6 +37,11 @@ function CreateAccount() {
               validationSchema={formSchema}
               onSubmit={(values, { resetForm }) => {
                 (async () => {
+                  // Similar recommendations to the deposit code.
+                  // 1. Switch to either async/await or promise.then for handling the response (promise then works best imho)
+                  // 2. Move the code into a function outside of the JSX
+                  // 3. You may want to implement a library that's easier to use than raw fetch (like `ky`)
+                  // 4. Not sure about the try / catch. I think it's for the await actually so it is probably not really necessary if you switch to using only promise.then
                   try {
                     await fetch("api/users", {
                       method: "POST",
@@ -127,6 +132,7 @@ function CreateAccount() {
                   <br />
                   <button
                     type="submit"
+                    disabled={ !isValid } /* I think this may be needed */
                     className="btn btn-outline-primary w-100"
                   >
                     Submit
@@ -141,20 +147,20 @@ function CreateAccount() {
                   </button>
                   <br />
                   <br />
-                  All ready have an account? 
-                  <br/> 
+                  Already have an account? { /** Minor spelling mistake */}
+                  <br/>
                   <a href="/login" style={{color: "blue"}}>Login</a>
                 </Form>
               )}
             </Formik>
           ) : (
             <>
-              <h5>Acount successfully created!</h5>
+                <h5>Account successfully created!</h5> { /** Minor spelling mistake */}
               <button
-                type="submit"
+                  type="submit"
                 className="btn btn-outline-primary mr-1"
                 onClick={() => {
-                  setShow(true);
+                  setShow(true); // Since you're navigating away this state update won't do anything useful
                   navigate("/login");
                 }}
               >
