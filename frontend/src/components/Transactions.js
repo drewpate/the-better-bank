@@ -8,12 +8,11 @@ import Transfer from "./Transfer";
 
 const Transactions = () => {
   const [showTransaction, setShowTransaction] = useState("");
-  let navigate = useNavigate()
+  let navigate = useNavigate();
   
   useEffect(() => {
-    
-    let token = localStorage.getItem('SavedToken');
-    if(!token) navigate('/login')
+    const token = localStorage.getItem('SavedToken');
+    if (!token) navigate('/login');
   }, [navigate])
 
 
@@ -34,7 +33,7 @@ const Transactions = () => {
           Withdraw
         </Button>{" "}
         <Button id="Deposit" variant="primary" onClick={handleShow}>
-          Desposit
+          Deposit { /* Minor spelling mistake */}
         </Button>{" "}
         <Button id="Transfer" variant="primary" onClick={handleShow}>
           Transfer

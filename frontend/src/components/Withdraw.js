@@ -4,6 +4,11 @@ import * as Yup from "yup";
 
 import Card  from "../components/Card";
 
+/**
+ * Since this page is basically deposit it might make sense to throw them into one page and just change a prop to signify
+ * transaction type.
+ */
+
 function Withdraw() {
   
   const [data, setData] = useState([]);
@@ -14,7 +19,6 @@ function Withdraw() {
   React.useEffect(() => {
     const username = localStorage.getItem('username');
 
-    
     try {
       fetch(`api/users/account/${username}`, {
         headers: {
@@ -30,12 +34,6 @@ function Withdraw() {
       setBalance(data.checkingBalance);
       console.log(data.checkingBalance);
     }, [data.checkingBalance])
-
-    
-
-    
-    
-
 
   const WithdrawSchema = Yup.object().shape({
     withdrawAmount: Yup.number("Please enter a number")

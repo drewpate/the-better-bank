@@ -1,6 +1,18 @@
 import React from "react";
-
+/*
+Recommended:
+`react-bootstrap`: https://react-bootstrap.github.io/
+`reactstrap`: https://reactstrap.github.io/?path=/story/home-installation--page
+*/
 function Card(props) {
+
+  /*
+  This function is a little unsafe for a couple of reasons.
+  For one, manually joining text is something I am a little wary of (may be difficult to debug / account for all possibilities)
+  Mainly it's not needed, since props will force a re-render, this does get called every time props update but it probably makes better sense to use these values directly in the JSX.
+  You can avoid this entirely by using one of the aforementioned react bootstrap libs. In that case, it is very simple, something like <Card bg={props.bgcolor} .../>
+  I'd recommend using https://www.npmjs.com/package/clsx to join classes when possible.
+  */
   function classes() {
     const bg = props.bgcolor ? " bg-" + props.bgcolor : " ";
     const txt = props.txtcolor ? " text-" + props.txtcolor : " text-black";
@@ -9,7 +21,13 @@ function Card(props) {
 
   return (
     <div
-      className={classes() + " " + props.className}
+      className={ classes() + " " + props.className }
+      /*
+      For these styles, I would recommend trying to use the provided bootstrap classes when possible.
+      If it works, it works and I don't have any real basis to oppose this type of styling, but from experience
+      I find it's generally safer and easier to use built in styles of a UI library than override with custom values
+      I personally only override with css if absolutely necessary
+      */
       style={{
         width: "18rem",
         height: "600",
@@ -26,7 +44,7 @@ function Card(props) {
         {props.title && <h5 className="card-title">{props.title}</h5>}
         {props.text && <p className="card-text">{props.text}</p>}
         {props.text2 && <p className="card-text">{props.text2}</p>}
-        {props.body}
+        { props.body } { /* Would recommend using props.children here. See https://codeburst.io/a-quick-intro-to-reacts-props-children-cb3d2fce4891 for more.*/}
         <br />
         {props.body2}
       </div>
