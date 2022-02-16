@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import * as Yup from "yup";
 
 import { Field, Form, Formik } from "formik";
-import Card from "./Card";
+import MyCard from "./MyCard";
 
 function Deposit() {
 
@@ -51,7 +51,7 @@ function Deposit() {
 
   return (
     <div className="container">
-      <Card
+      <MyCard
         className="mx-auto"
         header="Deposit"
         txtcolor="black"

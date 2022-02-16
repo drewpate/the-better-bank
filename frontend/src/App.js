@@ -2,6 +2,7 @@
 import React from 'react';
 import Navigation from "./components/Navigation";
 import Home from "./components/Home";
+import CreateAccount from './components/CreateAccount'
 import MyAccount from "./components/MyAccount";
 import Login from "./components/Login";
 import Transactions from "./components/Transactions";
@@ -24,6 +25,7 @@ function App() {
       <Navigation />
       <Routes>
             <Route path="/home" element={<Home />} />
+            <Route path="/createaccount" element={<CreateAccount/>}/>
             <Route path="/myaccount" element={<MyAccount />} />
             <Route path="/login" element={<Login />} />
             <Route path="/transactions" element={<Transactions />} />

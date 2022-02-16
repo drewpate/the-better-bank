@@ -1,6 +1,6 @@
 import React from "react";
 import { Formik, Form, Field } from "formik";
-import Card from "./Card";
+import MyCard from "./MyCard";
 import { useNavigate } from "react-router-dom";
 import * as Yup from "yup";
 
@@ -22,7 +22,7 @@ function CreateAccount() {
 
   return (
     <div className="container">
-      <Card
+      <MyCard
         className="mx-auto"
         header="Create Account"
         txtcolor="black"

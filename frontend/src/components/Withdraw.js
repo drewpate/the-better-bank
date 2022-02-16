@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
-import Card  from "../components/Card";
+import MyCard from '../components/MyCard'
 
 function Withdraw() {
   
@@ -48,7 +48,7 @@ function Withdraw() {
 
  return (
     <div className="container">
-      <Card
+      <MyCard
         className="mx-auto"
         header="Withdraw"
         txtcolor="black"

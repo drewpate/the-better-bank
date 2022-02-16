@@ -1,18 +1,15 @@
 import React from "react";
-import {Card} from 'react-bootstrap';
-import {useState} from 'react';
-import CreateAccount from "./CreateAccount";
-import {Button} from 'react-bootstrap';
+import {Card, Button} from 'react-bootstrap';
+import { useNavigate } from "react-router-dom";
 import img from "../assets/images/bank.png";
 
 const Home = () => {
-  
-  const [show, setShow] = useState(true);
-  const handleShow = () => setShow(false);
+
+    let navigate = useNavigate();
 
   return (
   <div className="container">
-    {show? <Card style={{
+    <Card style={{
         width: "18rem",
         height: "600",
         left: 0,
@@ -29,11 +26,11 @@ const Home = () => {
           (The Bad Bank 2.0)
           <br /> 
         </Card.Text>
-        <Button variant="primary" onClick={handleShow} >
+        <Button variant="primary" onClick={() => {navigate("/createaccount")}} >
           Let's Get Started
         </Button>
       </Card.Body>
-    </Card> : <CreateAccount/>}
+    </Card>
       
   </div>
 )};

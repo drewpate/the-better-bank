@@ -1,10 +1,10 @@
 import React from "react";
-import Card from "./Card";
+import MyCard from "./MyCard";
 
 const Transfer = () => {
   return (
     <div className="container">
-      <Card header="Transfer" />
+      <MyCard header="Transfer" />
     </div>
   );
 };

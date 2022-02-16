@@ -1,6 +1,6 @@
 import React, {useState} from "react";
 import { useNavigate } from "react-router-dom";
-import Card from "./Card";
+import MyCard from "./MyCard";
 
 
 const MyAccount = () => {
@@ -29,7 +29,7 @@ const MyAccount = () => {
 
   return (
     <>
-        <Card
+        <MyCard
           txtcolor="black"
           key={data._id}
           header={`Balances`}

@@ -3,7 +3,7 @@ import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
 
 
-import Card from "./Card";
+import MyCard from "./MyCard";
 import * as Yup from "yup";
 
 
@@ -51,7 +51,7 @@ const Login = () => {
 
   return (
     <div>
-      <Card
+      <MyCard
         header="Login"
         body={
           show? (
