@@ -38,7 +38,7 @@ function CreateAccount() {
               onSubmit={(values, { resetForm }) => {
                 (async () => {
                   try {
-                    await fetch("api/users", {
+                    const response = await fetch("api/users", {
                       method: "POST",
                       headers: {
                         "Content-Type": "application/json",
@@ -49,10 +49,8 @@ function CreateAccount() {
                         password: `${values.password}`,
                       }),
                     })
-                      .then((response) => response.json())
-                      .then((json) => {
-                        console.log(json);
-                      });
+                      .then((res) => res.json())
+                    console.log(response);
                   } catch (err) {
                     console.log(err);
                     throw new Error(err.message);
@@ -127,6 +125,7 @@ function CreateAccount() {
                   <br />
                   <button
                     type="submit"
+                    disabled={ !isValid }
                     className="btn btn-outline-primary w-100"
                   >
                     Submit
@@ -141,7 +140,7 @@ function CreateAccount() {
                   </button>
                   <br />
                   <br />
-                  All ready have an account? 
+                  Already have an account? 
                   <br/> 
                   <a href="/login" style={{color: "blue"}}>Login</a>
                 </Form>
@@ -149,12 +148,11 @@ function CreateAccount() {
             </Formik>
           ) : (
             <>
-              <h5>Acount successfully created!</h5>
+              <h5>Account successfully created!</h5>
               <button
                 type="submit"
                 className="btn btn-outline-primary mr-1"
                 onClick={() => {
-                  setShow(true);
                   navigate("/login");
                 }}
               >

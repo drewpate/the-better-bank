@@ -1,6 +1,7 @@
 const dal = require("../repositories/dal");
 const jwt = require("jsonwebtoken");
 
+
 async function userLogin(req, res) {
   const { username, password } = req.body;
   try {
@@ -24,10 +25,15 @@ const getAllUsers = (req, res) => {
 };
 
 const getOneUser = (req, res) => {
-  dal.findOne(req.params.username).then((user) => {
-    if (!user) return res.status(400).json({ msg: "No account found" });
-    res.status(200).json(user);
-  });
+  dal.findOne(req.params.username)
+
+  .then((user) => 
+  res.send((user))
+
+  .catch(error => 
+  res.status(500)
+  
+  .send(error)));
 };
 
 const updateUserBalance = (req, res) => {
@@ -37,8 +43,8 @@ const updateUserBalance = (req, res) => {
       req.body.checkingBalance,
       req.body.savingsBalance
     )
-    .then(function (user) {
-      res.send(req.body);
+    .then((user) => {
+      res.send(user);
     });
 };
 

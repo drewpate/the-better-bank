@@ -1,30 +1,37 @@
-import React, {useEffect, useState} from "react";
+import React, {useEffect, useState, useCallback} from "react";
 import { Nav, Navbar, Container,  Button, Badge } from "react-bootstrap";
 import { useNavigate } from "react-router-dom";
 
-const Navigation = () => {
+const Navigation = (props) => {
 
-  const [currentUser, setCurrentUser] = useState();
-  const user = localStorage.getItem('username');
+  const [currentUser, setCurrentUser] = useState([]);
   let navigate = useNavigate();
 
 
-  useEffect(()=> {
+  // useEffect(()=> {
 
-    const fetchCurrentUser = async () => {
-      if(!user) return null;
-      setCurrentUser(user);
-    };
-    fetchCurrentUser();
-  }, [user]);
+  //   const fetchCurrentUser = async () => {
+  //     if(!user) return null;
+  //     setCurrentUser(user);
+  //   };
+  //   fetchCurrentUser();
+  // }, [user]);
+
+  const fetchCurrentUser = useCallback(() => {
+    const user = localStorage.getItem('username');
+    if (!user) return;
+    setCurrentUser(user);
+  }, []);
+  
+  useEffect(fetchCurrentUser, [fetchCurrentUser]);
 
 
   
   function handleLogout(){
-    navigate("/login");
     localStorage.setItem('username', "");
     localStorage.setItem('SavedToken', "")
-    setCurrentUser();
+    setCurrentUser([]);
+    navigate("/login");
   }
   
 
@@ -41,17 +48,13 @@ const Navigation = () => {
               <Nav.Link href="/transactions">Transactions</Nav.Link>
               <Nav.Link href="/allaccounts">All Accounts</Nav.Link>
             </Nav>
-            {currentUser? (<h4><Badge>{currentUser}</Badge></h4>
-            
-            ) : null}
-            <Button
-              variant="outline-sucess"
-              onClick={() => {
-                handleLogout()
-              }}
-            >
-              Logout
-            </Button>
+            {currentUser?  (
+            <h4>
+              <Badge>{props.user || localStorage.getItem('username')}
+            </Badge>
+            </h4>
+            ): null}
+            <Button onClick={handleLogout}>Logout</Button>
           </Navbar.Collapse>
         </Container>
       </Navbar>

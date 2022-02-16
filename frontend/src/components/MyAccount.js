@@ -8,11 +8,11 @@ const MyAccount = () => {
   const [data, setData] = useState([]);
   
   React.useEffect(() => {
+
     const username = localStorage.getItem('username');
     if(!username) return navigate('/login');
 
-    try {
-      fetch(`api/users/account/${username}`, {
+    fetch(`api/users/account/${username}`, {
         headers: {
           Authorization: localStorage.getItem('SavedToken')
         }})
@@ -20,15 +20,12 @@ const MyAccount = () => {
         .then((data) => {
           setData(data)
         })
-
-      } catch (err) {
-        throw new Error (err.message)
-      };
+        .catch(e => console.error("Something went wrong getting account details", e))
       
   }, [navigate])
 
   return (
-    <>
+    
         <MyCard
           txtcolor="black"
           key={data._id}
@@ -36,7 +33,6 @@ const MyAccount = () => {
           body={`Checking Balance: ${data.checkingBalance}`}
           body2={`Savings Balance: ${data.savingsBalance}`}
         />
-    </>
   );
 };
 

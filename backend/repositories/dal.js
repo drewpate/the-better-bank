@@ -70,15 +70,14 @@ async function find(email) {
   }
 }
 
-//get one user by email.
-async function findOne(username) {
-  const user = User.findOne({ username });
-  return user;
+//get one user by username.
+function findOne(username) {
+    return User.findOne({ username })
 }
 //update user checking/savings
 async function updateUserBalance(username, checkingAmount, savingsAmount) {
   try {
-    await db.collection("users").findOneAndUpdate(
+    const update = await User.findOneAndUpdate(
       { username },
       {
         $inc: {
@@ -88,6 +87,7 @@ async function updateUserBalance(username, checkingAmount, savingsAmount) {
       },
       { returnOriginal: false }
     );
+    return update;
   } catch (err) {
     console.log(err);
     throw new Error(err.message);
@@ -96,9 +96,7 @@ async function updateUserBalance(username, checkingAmount, savingsAmount) {
 //delete one user
 async function deleteUser(username) {
   try {
-    return db
-      .collection("users")
-      .deleteOne(
+    return User.deleteOne(
         { username },
         { returnOriginal: false },
         { returnNewDocument: true }

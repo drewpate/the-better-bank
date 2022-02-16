@@ -10,6 +10,7 @@ import * as Yup from "yup";
 const Login = () => {
   
   const [show, setShow] = useState(true);
+  const [loginError, setLoginError] = useState(false);
   
 
  
@@ -25,7 +26,6 @@ const Login = () => {
   
   const handleLogin = (values)=> {
     
-    try {
         fetch("api/users/login", {
           method: "POST",
           headers: {
@@ -40,30 +40,33 @@ const Login = () => {
         .then(res => {
           console.log(res)
           let token = res.token;
-          localStorage.setItem('SavedToken', 'Bearer ' + token);
+          if(!token) 
+          
+          return setLoginError(true) + 
+          setTimeout(() => {
+            setLoginError(false)}, 2000)
+
+          localStorage.setItem('SavedToken', + token);
           localStorage.setItem('username', values.username);
-      });
-
-        } catch (error) {
-          throw new Error("Something went wrong when logging in.")
-        }
-  }
-
-  return (
-    <div>
+          setShow(false);
+        })
+        .catch(error => console.error('Error occurred on login', error));
+      }
+      
+      return (
+        <div>
       <MyCard
         header="Login"
         body={
           show? (
-          <Formik
+            <Formik
             initialValues={{
               username: "",
               password: "",
             }}
             validationSchema={loginSchema}
             onSubmit={(values) => {
-                  handleLogin(values);
-                  setShow(false);
+              handleLogin(values);
             }}
           >
             {({ errors, touched, isValid, dirty }) => (
@@ -112,6 +115,20 @@ const Login = () => {
                 <button type="submit" disabled={!(isValid && dirty)} className="btn btn-outline-primary w-100">
                   Submit
                 </button>
+                { loginError ? (<div
+                    style={{
+                      color: "red",
+                      backgroundColor: "pink",
+                      textAlign: "center",
+                      borderRadius: 5,
+                      fontWeight: "bold",
+                      fontSize: "x-small",
+                      padding: 10,
+                      marginTop: 10,
+                    }}
+                  >
+                   Invalid Credentials
+                  </div>)  : null }
               </Form>
             )}
           </Formik>) : (<>
@@ -120,7 +137,6 @@ const Login = () => {
                 type="submit"
                 className="btn btn-outline-primary mr-1"
                 onClick={() => {
-                  setShow(true);
                   navigate("/myaccount");
                 }}
               >
