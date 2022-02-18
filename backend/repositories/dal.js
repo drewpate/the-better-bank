@@ -19,8 +19,6 @@ try {
   console.log("there was a problem connecting to MONGODB");
 }
 
-const db = mongoose.connection;
-
 //create new user
 async function create(username, email, password) {
   const salt = await bcrypt.genSalt(10);
@@ -79,25 +77,24 @@ async function updateUserBalance(username, checkingAmount, savingsAmount) {
   );
 }
 
-//delete one user
-async function deleteUser(username) {
-  try {
-    return User.deleteOne(
-      { username },
-      { returnOriginal: false },
-      { returnNewDocument: true }
-    );
-  } catch (err) {
-    console.log(err);
-    throw new Error(err.message);
-  }
-}
+// //delete one user
+// async function deleteUser(username) {
+//   try {
+//     return User.deleteOne(
+//       { username },
+//       { returnOriginal: false },
+//       { returnNewDocument: true }
+//     );
+//   } catch (err) {
+//     console.log(err);
+//     throw new Error(err.message);
+//   }
+// }
 
 module.exports = {
   create,
   findOne,
   updateUserBalance,
   all,
-  deleteUser,
   userLogin,
 };
