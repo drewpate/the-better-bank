@@ -8,14 +8,12 @@ import Transfer from "./Transfer";
 
 const Transactions = () => {
   const [showTransaction, setShowTransaction] = useState("");
-  let navigate = useNavigate()
-  
-  useEffect(() => {
-    
-    let token = localStorage.getItem('SavedToken');
-    if(!token) navigate('/login')
-  }, [navigate])
+  let navigate = useNavigate();
 
+  useEffect(() => {
+    let token = localStorage.getItem("SavedToken");
+    if (!token) navigate("/login");
+  }, [navigate]);
 
   const handleShow = (e) => {
     let whichButton = e.target.id;
@@ -27,9 +25,8 @@ const Transactions = () => {
     <div className="container">
       <div
         className="container"
-        style={{ textAlign: "center", padding: "10", marginTop: "12" }}
+        style={{ textAlign: "center", padding: 10, marginTop: 50 }}
       >
-        <h1>Transactions: </h1>
         <Button id="Withdraw" variant="primary" onClick={handleShow}>
           Withdraw
         </Button>{" "}

@@ -1,15 +1,20 @@
 const dal = require("../repositories/dal");
 const jwt = require("jsonwebtoken");
 
-
+let isLoggedIn = false;
 async function userLogin(req, res) {
   const { username, password } = req.body;
   try {
     const user = await dal.userLogin(username, password);
     if (user) {
-      const token = jwt.sign({ id: user._id, username: user.username }, process.env.JWT_SECRET, {
-        expiresIn: 3600,
-      });
+      const token = jwt.sign(
+        { id: user._id, username: user.username },
+        process.env.JWT_SECRET,
+        {
+          expiresIn: 3600,
+        }
+      );
+      isLoggedIn = true;
       return res.status(200).json({ token: token, user: user });
     }
   } catch (error) {
@@ -25,15 +30,11 @@ const getAllUsers = (req, res) => {
 };
 
 const getOneUser = (req, res) => {
-  dal.findOne(req.params.username)
+  dal
+    .findOne(req.params.username)
 
-  .then((user) => 
-  res.send((user))
-
-  .catch(error => 
-  res.status(500)
-  
-  .send(error)));
+    .then((user) => res.status(200).json(user))
+    .catch((error) => res.status(500).send(error));
 };
 
 const updateUserBalance = (req, res) => {
@@ -44,7 +45,7 @@ const updateUserBalance = (req, res) => {
       req.body.savingsBalance
     )
     .then((user) => {
-      res.send(user);
+      res.status(200).json({ msg: "Transaction successful" });
     });
 };
 
@@ -87,4 +88,5 @@ module.exports = {
   deleteUser,
   updateUserBalance,
   createUser,
+  isLoggedIn,
 };

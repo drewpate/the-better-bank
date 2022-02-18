@@ -1,7 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const dotenv = require("dotenv");
-const {authMiddleWare, checkUser} = require('../../middleware/auth-middleware')
+const {
+  authMiddleWare,
+  checkUser,
+} = require("../../middleware/auth-middleware");
 
 const {
   userLogin,
@@ -27,7 +30,7 @@ router.get("/", authMiddleWare, getAllUsers);
 router.get("/account/:username", authMiddleWare, getOneUser);
 
 //update checking/savings
-router.put("/transactions", authMiddleWare, updateUserBalance);
+router.patch("/transactions", authMiddleWare, updateUserBalance);
 
 //delete user account
 router.delete("/:username", authMiddleWare, deleteUser);

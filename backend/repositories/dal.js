@@ -72,35 +72,44 @@ async function find(email) {
 
 //get one user by username.
 function findOne(username) {
-    return User.findOne({ username })
+  return User.findOne({ username });
 }
+
 //update user checking/savings
 async function updateUserBalance(username, checkingAmount, savingsAmount) {
-  try {
-    const update = await User.findOneAndUpdate(
-      { username },
-      {
-        $inc: {
-          checkingBalance: checkingAmount,
-          savingsBalance: savingsAmount,
-        },
+  const update = await User.findOneAndUpdate(
+    { username },
+    {
+      $inc: {
+        checkingBalance: checkingAmount,
+        savingsBalance: savingsAmount,
       },
-      { returnOriginal: false }
-    );
-    return update;
-  } catch (err) {
-    console.log(err);
-    throw new Error(err.message);
-  }
+    },
+    { returnOriginal: false }
+  );
+  return update;
 }
+
+// //update user checking/savings
+// function updateUserBalance(username, checkingAmount, savingsAmount) {
+//   let update = {};
+//   if (checkingAmount || parseFloat(checkingAmount) === 0) {
+//     update.checkingAmount = checkingAmount;
+//   }
+//   if (savingsAmount || parseFloat(savingsAmount) === 0) {
+//     update.savingsAmount = savingsAmount;
+//   }
+//   return User.findOneAndUpdate({ username }, update, { returnOriginal: false });
+// }
+
 //delete one user
 async function deleteUser(username) {
   try {
     return User.deleteOne(
-        { username },
-        { returnOriginal: false },
-        { returnNewDocument: true }
-      );
+      { username },
+      { returnOriginal: false },
+      { returnNewDocument: true }
+    );
   } catch (err) {
     console.log(err);
     throw new Error(err.message);

@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Formik, Form, Field } from "formik";
 import { useNavigate } from "react-router-dom";
+import { useNewUser } from "../context/UserContext";
 
 import MyCard from "./MyCard";
 import * as Yup from "yup";
@@ -8,6 +9,11 @@ import * as Yup from "yup";
 const Login = () => {
   const [show, setShow] = useState(true);
   const [loginError, setLoginError] = useState(false);
+  const { currentUser, setUser } = useNewUser();
+
+  useEffect(() => {
+    if (!currentUser?.length) setShow(true);
+  }, [currentUser?.length]);
 
   const loginSchema = Yup.object().shape({
     username: Yup.string()
@@ -33,7 +39,7 @@ const Login = () => {
       .then((res) => res.json())
       .then((res) => {
         console.log(res);
-        let token = res.token;
+        const token = res.token;
         if (!token)
           return (
             setLoginError(true) +
@@ -41,9 +47,9 @@ const Login = () => {
               setLoginError(false);
             }, 2000)
           );
-        console.log(token);
-        localStorage.setItem("SavedToken", +token);
+        localStorage.setItem("SavedToken", token);
         localStorage.setItem("username", values.username);
+        setUser(values.username);
         setShow(false);
       })
       .catch((error) => console.error("Error occurred on login", error));
@@ -131,6 +137,13 @@ const Login = () => {
                       Invalid Credentials
                     </div>
                   ) : null}
+                  <br />
+                  <br />
+                  Don't have an account?
+                  <br />
+                  <a href="/createaccount" style={{ color: "blue" }}>
+                    Create Account
+                  </a>
                 </Form>
               )}
             </Formik>

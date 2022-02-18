@@ -2,40 +2,35 @@ import React, { useState } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 
-import MyCard from '../components/MyCard'
+import MyCard from "../components/MyCard";
 
 function Withdraw() {
-  
   const [data, setData] = useState([]);
-  const [balance, setBalance] = useState([]);
+  const [checkingBalance, setCheckingBalance] = useState([]);
+  const [savingsBalance, setSavingsBalance] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("1");
   const [showError, setShowError] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
-  
-  React.useEffect(() => {
-    const username = localStorage.getItem('username');
 
-    
+  React.useEffect(() => {
+    const username = localStorage.getItem("username");
+
     try {
       fetch(`api/users/account/${username}`, {
         headers: {
-          Authorization:localStorage.getItem('SavedToken')
-        }})
+          Authorization: localStorage.getItem("SavedToken"),
+        },
+      })
         .then((res) => res.json())
         .then((data) => {
-          setData(data)
-        })
-      } catch (err) {
-        throw new Error (err.message)
-      };
-      setBalance(data.checkingBalance);
-      console.log(data.checkingBalance);
-    }, [data.checkingBalance])
-
-    
-
-    
-    
-
+          setData(data);
+        });
+    } catch (err) {
+      throw new Error(err.message);
+    }
+    setCheckingBalance(data.checkingBalance);
+    setSavingsBalance(data.savingsBalance);
+  }, [data.checkingBalance, data.savingsBalance]);
 
   const WithdrawSchema = Yup.object().shape({
     withdrawAmount: Yup.number("Please enter a number")
@@ -45,8 +40,30 @@ function Withdraw() {
       .integer(),
   });
 
+  function handleUpdate(values, accountType) {
+    const account =
+      accountType === "1"
+        ? { checkingBalance: -values.withdrawAmount, savingsBalance: 0 }
+        : { checkingBalance: 0, savingsBalance: -values.withdrawAmount };
+    try {
+      const username = localStorage.getItem("username");
+      fetch("api/users/transactions", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("SavedToken"),
+        },
+        body: JSON.stringify({
+          username,
+          ...account,
+        }),
+      });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 
- return (
+  return (
     <div className="container">
       <MyCard
         className="mx-auto"
@@ -58,51 +75,77 @@ function Withdraw() {
               withdrawAmount: 0,
             }}
             validationSchema={WithdrawSchema}
-            onSubmit={(values, {resetForm}) => {
-              (async () => {
-              try {
-                if (values.withdrawAmount > data.checkingBalance)
+            onSubmit={(values, { resetForm }) => {
+              if (selectedOption === "1") {
+                if (checkingBalance < values.withdrawAmount) {
                   setShowError(true);
-                  setShowSuccessMessage(false);
-                  const username = localStorage.getItem('username');
-                  fetch("api/users/transactions", {
-                    method: "PUT",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: localStorage.getItem('SavedToken')},
-                    body: JSON.stringify
-                    ({
-                        username: `${username}`,
-                        checkingBalance: - JSON.parse(`${values.withdrawAmount}`),
-                        savingsBalance:  - JSON.parse(`${values.withdrawAmount}`)
-                    })
-                  })
-                  setBalance(data.checkingBalance - values.withdrawAmount);
-                } catch (error) {
-                  throw new Error(error.message);
+                } else {
+                  handleUpdate(values, selectedOption);
+                  setCheckingBalance(checkingBalance - values.withdrawAmount);
+                  console.log("you withdrew" + values.withdrawAmount);
+                  setShowSuccessMessage(true);
+                  resetForm();
                 }
-              })();
-            setShowSuccessMessage(true);
-            setShowError(false);
-            resetForm();
-            console.log('you withdrew' + values.withdrawAmount)
-          }}
+              } else {
+                if (savingsBalance < values.withdrawAmount) {
+                  setShowError(true);
+                } else {
+                  handleUpdate(values, selectedOption);
+                  setSavingsBalance(savingsBalance - values.withdrawAmount);
+                  console.log("you withdrew" + values.withdrawAmount);
+                  setShowSuccessMessage(true);
+                  resetForm();
+                }
+              }
+            }}
           >
-            
-            {({  isValid, dirty }) => (
+            {({ isValid, dirty }) => (
               <Form>
-                Checking Balance:
-                 { "$" + balance}
+                <label htmlFor="Choose-Account">Choose Account:</label>
                 <br />
                 <br />
                 <Field
+                  as="select"
                   className="form-control"
-                  name="withdrawAmount"
-                  placeholder="Withdraw Checking"
-                  type="number"
-                  default="0"
-                  min="0"
-                />
+                  id="ChooseAccount"
+                  name="ChooseAccount"
+                  onChange={(e) => {
+                    setSelectedOption(e.target.value);
+                  }}
+                >
+                  <option value="1">Checking</option>
+                  <option value="2">Savings</option>
+                </Field>
+                <br />
+                {selectedOption === "1" ? (
+                  <p>{"Balance $" + checkingBalance}</p>
+                ) : (
+                  <p>{"Balance $" + savingsBalance}</p>
+                )}
+                {selectedOption === "1" && (
+                  <Field
+                    className="form-control"
+                    name="withdrawAmount"
+                    id="withdrawAmount"
+                    placeholder="Withdraw Checking"
+                    type="number"
+                    default="0"
+                    min="0"
+                  />
+                )}
+                {selectedOption === "2" && (
+                  <Field
+                    className="form-control"
+                    name="withdrawAmount"
+                    id="withdrawAmount"
+                    placeholder="Withdraw Savings"
+                    type="number"
+                    default="0"
+                    min="0"
+                  />
+                )}
+                <br />
+                <br />
                 <br />
                 <button
                   type="submit"

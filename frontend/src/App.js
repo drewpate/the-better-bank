@@ -6,22 +6,24 @@ import MyAccount from "./components/MyAccount";
 import Login from "./components/Login";
 import Transactions from "./components/Transactions";
 import AllAccounts from "./components/AllAccounts";
-import { Routes, Route } from "react-router-dom";
-
-import { Outlet } from "react-router-dom";
+import { Routes, Route, Outlet } from "react-router-dom";
+import { UserProvider } from "./context/UserContext";
 
 function App() {
   return (
     <div className="App">
-      <Navigation />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/createaccount" element={<CreateAccount />} />
-        <Route path="/myaccount" element={<MyAccount />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/transactions" element={<Transactions />} />
-        <Route path="/allaccounts" element={<AllAccounts />} />
-      </Routes>
+      <UserProvider>
+        <Navigation />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/createaccount" element={<CreateAccount />} />
+          <Route path="/myaccount" element={<MyAccount />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/transactions" element={<Transactions />} />
+          <Route path="/allaccounts" element={<AllAccounts />} />
+        </Routes>
+      </UserProvider>
       <Outlet />
     </div>
   );
