@@ -1,12 +1,248 @@
-import React from "react";
+import React, { useState } from "react";
+import * as Yup from "yup";
+
+import { Field, Form, Formik } from "formik";
 import MyCard from "./MyCard";
 
-const Transfer = () => {
+function Transfer() {
+  const [data, setData] = useState([]);
+  const [checkingBalance, setCheckingBalance] = useState([]);
+  const [savingsBalance, setSavingsBalance] = useState([]);
+  const [selectedFromOption, setSelectedFromOption] = useState("fromChecking");
+  const [selectedToOption, setSelectedToOption] = useState("toSavings");
+  const [transfer, setTransfer] = useState();
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
+  const [showError, setShowError] = useState(false);
+
+  React.useEffect(() => {
+    const username = localStorage.getItem("username");
+
+    try {
+      fetch(`api/users/account/${username}`, {
+        headers: {
+          Authorization: localStorage.getItem("SavedToken"),
+        },
+      })
+        .then((res) => res.json())
+        .then((data) => {
+          setData(data);
+        });
+    } catch (err) {
+      throw new Error(err.message);
+    }
+    setCheckingBalance(data.checkingBalance);
+    setSavingsBalance(data.savingsBalance);
+  }, [data.checkingBalance, data.savingsBalance]);
+
+  const TransferSchema = Yup.object().shape({
+    depositAmount: Yup.number()
+      .required("Please enter an amount")
+      .positive()
+      .integer(),
+  });
+
+  function handleUpdate(values, accountType) {
+    const accountUpdate =
+      accountType === "fromChecking"
+        ? {
+            checkingBalance: -values.transferAmount,
+            savingsBalance: +values.transferAmount,
+          }
+        : {
+            checkingBalance: +values.transferAmount,
+            savingsBalance: -values.withdrawAmount,
+          };
+
+    try {
+      const username = localStorage.getItem("username");
+      fetch("api/users/transactions", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("SavedToken"),
+        },
+        body: JSON.stringify({
+          username,
+          ...accountUpdate,
+        }),
+      });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
+
   return (
     <div className="container">
-      <MyCard header="Transfer" />
+      <MyCard
+        className="mx-auto"
+        header="Transfer"
+        txtcolor="black"
+        body={
+          <Formik
+            initialValues={{
+              transferAmount: 0,
+            }}
+            validationSchema={TransferSchema}
+            onSubmit={(values, { resetForm }) => {
+              if (selectedFromOption === selectedToOption)
+                return setShowError(true);
+              if (selectedFromOption === "fromChecking") {
+                handleUpdate(values, selectedFromOption);
+                setTransfer(values.transferAmount);
+                setCheckingBalance(checkingBalance - values.transferAmount);
+                setSavingsBalance(savingsBalance + values.transferAmount);
+                resetForm();
+                return (
+                  setShowSuccessMessage(true) +
+                  setTimeout(() => {
+                    setShowSuccessMessage(false);
+                  }, 1500)
+                );
+              } else {
+                handleUpdate(values, selectedFromOption);
+                setTransfer(values.transferAmount);
+                setSavingsBalance(savingsBalance + values.transferAmount);
+                resetForm();
+                return (
+                  setShowSuccessMessage(true) +
+                  setTimeout(() => {
+                    setShowSuccessMessage(false);
+                  }, 1500)
+                );
+              }
+            }}
+          >
+            {({ errors, touched, isValid, dirty }) => (
+              <Form>
+                <label htmlFor="ChooseFromAccount">
+                  <b>From:</b>
+                </label>
+                <br />
+                <br />
+                <Field
+                  as="select"
+                  name="ChooseFromAccount"
+                  id="ChooseFromAccount"
+                  className="form-control"
+                  value={selectedFromOption}
+                  onChange={(e) => {
+                    setSelectedFromOption(e.target.value);
+                  }}
+                >
+                  <option value="fromChecking">
+                    {"Checking: $ " + checkingBalance}
+                  </option>
+                  <option value="fromSavings">
+                    {"Savings: $ " + savingsBalance}
+                  </option>
+                </Field>
+                <br />
+                <label htmlFor="ChooseFromAccount">
+                  <b>To:</b>
+                </label>
+                <br />
+                <br />
+                <Field
+                  as="select"
+                  name="ChooseToAccount"
+                  value={selectedToOption}
+                  id="ChooseToAccount"
+                  className="form-control"
+                  onChange={(e) => {
+                    setSelectedToOption(e.target.value);
+                  }}
+                >
+                  <option value="toSavings">
+                    {"Savings: $" + savingsBalance}
+                  </option>
+                  <option value="toChecking">
+                    {"Checking: $ " + checkingBalance}
+                  </option>
+                </Field>
+                {errors.userPosition && touched.userPosition ? (
+                  <div
+                    style={{
+                      color: "red",
+                      fontWeight: "bold",
+                      fontSize: "x-small",
+                    }}
+                  >
+                    {errors.userPosition}
+                  </div>
+                ) : null}
+                <br />
+                <p>Amount</p>
+                <br />
+                <Field
+                  className="form-control"
+                  name="transferAmount"
+                  id="transferAmount"
+                  value={transfer}
+                  placeholder="Transfer Amount"
+                  type="number"
+                  default="0"
+                  min="0"
+                />
+                {errors.depositAmount && touched.depositAmount ? (
+                  <div
+                    style={{
+                      color: "red",
+                      fontWeight: "bold",
+                      marginTop: 6,
+                      marginBottom: 10,
+                      fontSize: "small",
+                    }}
+                  >
+                    {errors.depositAmount}
+                  </div>
+                ) : null}
+                <br />
+                <button
+                  type="submit"
+                  className="btn btn-outline-primary mr-1 w-100"
+                  disabled={!(isValid && dirty)}
+                >
+                  Submit
+                </button>
+                {showSuccessMessage ? (
+                  <div
+                    style={{
+                      color: "green",
+                      backgroundColor: "LightGreen",
+                      textAlign: "center",
+                      borderRadius: 5,
+                      fontWeight: "bold",
+                      fontSize: "x-small",
+                      padding: 10,
+                      marginTop: 10,
+                    }}
+                  >
+                    <p>Deposit Sucessful</p>
+                  </div>
+                ) : null}
+                {showError ? (
+                  <div
+                    style={{
+                      color: "red",
+                      backgroundColor: "pink",
+                      textAlign: "center",
+                      borderRadius: 5,
+                      fontWeight: "bold",
+                      fontSize: "x-small",
+                      padding: 10,
+                      marginTop: 10,
+                    }}
+                  >
+                    <p>That's Impossible</p>
+                  </div>
+                ) : null}
+              </Form>
+            )}
+          </Formik>
+        }
+      />
     </div>
   );
-};
+}
 
 export default Transfer;

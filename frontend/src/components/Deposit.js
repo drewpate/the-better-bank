@@ -6,8 +6,10 @@ import MyCard from "./MyCard";
 
 function Deposit() {
   const [data, setData] = useState([]);
-  const [balance, setBalance] = useState([]);
-  const [showSuccessMessage, setShowSuccesMessage] = useState(false);
+  const [checkingBalance, setCheckingBalance] = useState([]);
+  const [savingsBalance, setSavingsBalance] = useState([]);
+  const [selectedOption, setSelectedOption] = useState("checking");
+  const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
   React.useEffect(() => {
     const username = localStorage.getItem("username");
@@ -25,9 +27,9 @@ function Deposit() {
     } catch (err) {
       throw new Error(err.message);
     }
-    setBalance(data.checkingBalance);
-    console.log(data.checkingBalance);
-  }, [data.checkingBalance]);
+    setCheckingBalance(data.checkingBalance);
+    setSavingsBalance(data.savingsBalance);
+  }, [data.checkingBalance, data.savingsBalance]);
 
   const DepositSchema = Yup.object().shape({
     depositAmount: Yup.number()
@@ -35,6 +37,30 @@ function Deposit() {
       .positive()
       .integer(),
   });
+
+  function handleUpdate(values, accountType) {
+    const accountUpdate =
+      accountType === "checking"
+        ? { checkingBalance: +values.depositAmount, savingsBalance: 0 }
+        : { checkingBalance: 0, savingsBalance: +values.withdrawAmount };
+
+    try {
+      const username = localStorage.getItem("username");
+      fetch("api/users/transactions", {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: localStorage.getItem("SavedToken"),
+        },
+        body: JSON.stringify({
+          username,
+          ...accountUpdate,
+        }),
+      });
+    } catch (error) {
+      throw new Error(error.message);
+    }
+  }
 
   return (
     <div className="container">
@@ -50,43 +76,51 @@ function Deposit() {
             }}
             validationSchema={DepositSchema}
             onSubmit={(values, { resetForm }) => {
-              (async () => {
-                try {
-                  const username = localStorage.getItem("username");
-                  fetch("api/users/transactions", {
-                    method: "PATCH",
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: localStorage.getItem("SavedToken"),
-                    },
-                    body: JSON.stringify({
-                      username: `${username}`,
-                      checkingBalance: values.depositAmount,
-                      savingsBalance: values.depositAmount,
-                    }),
-                  });
-
-                  setBalance(values.depositAmount + data.checkingBalance);
-                  setShowSuccesMessage(true);
-                } catch (error) {
-                  throw new Error(error.message);
-                }
-              })();
-              resetForm();
-              console.log("you deposited" + values.depositAmount);
+              if (selectedOption === "checking") {
+                handleUpdate(values, selectedOption);
+                setCheckingBalance(checkingBalance + values.depositAmount);
+                resetForm();
+                return (
+                  setShowSuccessMessage(true) +
+                  setTimeout(() => {
+                    setShowSuccessMessage(false);
+                  }, 1500)
+                );
+              } else {
+                handleUpdate(values, selectedOption);
+                setSavingsBalance(savingsBalance + values.depositAmount);
+                resetForm();
+                return (
+                  setShowSuccessMessage(true) +
+                  setTimeout(() => {
+                    setShowSuccessMessage(false);
+                  }, 1500)
+                );
+              }
             }}
           >
-            {({ errors, touched, isValid, dirty, values }) => (
+            {({ errors, touched, isValid, dirty }) => (
               <Form>
-                Account Balance: {"$" + balance}
+                <label htmlFor="Choose-Account">Choose Account:</label>
                 <br />
-                <Field as="select" name="userPosition" className="form-control">
-                  <option key="selectAccount" value="" disabled>
-                    Select Account
-                  </option>
-                  <option>Checking</option>
-                  <option>Savings</option>
+                <Field
+                  as="select"
+                  name="ChooseAccount"
+                  id="ChooseAccount"
+                  className="form-control"
+                  onChange={(e) => {
+                    setSelectedOption(e.target.value);
+                  }}
+                >
+                  <option value="checking">Checking</option>
+                  <option value="savings">Savings</option>
                 </Field>
+                <br />
+                {selectedOption === "checking" ? (
+                  <p>{"Balance $" + checkingBalance}</p>
+                ) : (
+                  <p>{"Balance $" + savingsBalance}</p>
+                )}
                 {errors.userPosition && touched.userPosition ? (
                   <div
                     style={{

@@ -8,7 +8,7 @@ function Withdraw() {
   const [data, setData] = useState([]);
   const [checkingBalance, setCheckingBalance] = useState([]);
   const [savingsBalance, setSavingsBalance] = useState([]);
-  const [selectedOption, setSelectedOption] = useState("1");
+  const [selectedOption, setSelectedOption] = useState("checking");
   const [showError, setShowError] = useState(false);
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
 
@@ -41,8 +41,8 @@ function Withdraw() {
   });
 
   function handleUpdate(values, accountType) {
-    const account =
-      accountType === "1"
+    const accountUpdate =
+      accountType === "checking"
         ? { checkingBalance: -values.withdrawAmount, savingsBalance: 0 }
         : { checkingBalance: 0, savingsBalance: -values.withdrawAmount };
     try {
@@ -55,7 +55,7 @@ function Withdraw() {
         },
         body: JSON.stringify({
           username,
-          ...account,
+          ...accountUpdate,
         }),
       });
     } catch (error) {
@@ -72,37 +72,56 @@ function Withdraw() {
         body={
           <Formik
             initialValues={{
+              userPosition: "",
               withdrawAmount: 0,
             }}
             validationSchema={WithdrawSchema}
             onSubmit={(values, { resetForm }) => {
-              if (selectedOption === "1") {
+              if (selectedOption === "checking") {
                 if (checkingBalance < values.withdrawAmount) {
-                  setShowError(true);
+                  return (
+                    setShowError(true) +
+                    setTimeout(() => {
+                      setShowError(false);
+                    }, 1500)
+                  );
                 } else {
                   handleUpdate(values, selectedOption);
                   setCheckingBalance(checkingBalance - values.withdrawAmount);
-                  console.log("you withdrew" + values.withdrawAmount);
-                  setShowSuccessMessage(true);
                   resetForm();
+                  return (
+                    setShowSuccessMessage(true) +
+                    setTimeout(() => {
+                      setShowSuccessMessage(false);
+                    }, 1500)
+                  );
                 }
               } else {
                 if (savingsBalance < values.withdrawAmount) {
-                  setShowError(true);
+                  return (
+                    setShowError(true) +
+                    setTimeout(() => {
+                      setShowError(false);
+                    }, 1500)
+                  );
                 } else {
                   handleUpdate(values, selectedOption);
                   setSavingsBalance(savingsBalance - values.withdrawAmount);
                   console.log("you withdrew" + values.withdrawAmount);
-                  setShowSuccessMessage(true);
                   resetForm();
+                  return (
+                    setShowSuccessMessage(true) +
+                    setTimeout(() => {
+                      setShowSuccessMessage(false);
+                    }, 1500)
+                  );
                 }
               }
             }}
           >
-            {({ isValid, dirty }) => (
+            {({ errors, touched, isValid, dirty }) => (
               <Form>
                 <label htmlFor="Choose-Account">Choose Account:</label>
-                <br />
                 <br />
                 <Field
                   as="select"
@@ -113,16 +132,18 @@ function Withdraw() {
                     setSelectedOption(e.target.value);
                   }}
                 >
-                  <option value="1">Checking</option>
-                  <option value="2">Savings</option>
+                  <option value="checking">Checking</option>
+                  <option value="savings">Savings</option>
                 </Field>
                 <br />
-                {selectedOption === "1" ? (
+                {selectedOption === "checking" ? (
                   <p>{"Balance $" + checkingBalance}</p>
                 ) : (
                   <p>{"Balance $" + savingsBalance}</p>
                 )}
-                {selectedOption === "1" && (
+                <br />
+                <p>Amount</p>
+                {selectedOption === "checking" && (
                   <Field
                     className="form-control"
                     name="withdrawAmount"
@@ -133,7 +154,7 @@ function Withdraw() {
                     min="0"
                   />
                 )}
-                {selectedOption === "2" && (
+                {selectedOption === "savings" && (
                   <Field
                     className="form-control"
                     name="withdrawAmount"
@@ -146,7 +167,17 @@ function Withdraw() {
                 )}
                 <br />
                 <br />
-                <br />
+                {errors.userPosition && touched.userPosition ? (
+                  <div
+                    style={{
+                      color: "red",
+                      fontWeight: "bold",
+                      fontSize: "x-small",
+                    }}
+                  >
+                    {errors.userPosition}
+                  </div>
+                ) : null}
                 <button
                   type="submit"
                   className="btn btn-outline-primary mr-1 w-100"

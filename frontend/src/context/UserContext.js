@@ -13,7 +13,6 @@ export function UserProvider({ children }) {
     const user = localStorage.getItem("username");
     if (!user) return;
     setCurrentUser(user);
-    console.log("context", user);
   }, []);
 
   const setUser = (data) => {

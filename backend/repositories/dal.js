@@ -60,16 +60,6 @@ async function all() {
   }
 }
 
-//find by email, not sure yet how this is different from findOne
-async function find(email) {
-  try {
-    return db.collection("users").find({ email: email }).toArray();
-  } catch {
-    console.log(err);
-    throw new Error(err.message);
-  }
-}
-
 //get one user by username.
 function findOne(username) {
   return User.findOne({ username });
@@ -90,18 +80,6 @@ async function updateUserBalance(username, checkingAmount, savingsAmount) {
   return update;
 }
 
-// //update user checking/savings
-// function updateUserBalance(username, checkingAmount, savingsAmount) {
-//   let update = {};
-//   if (checkingAmount || parseFloat(checkingAmount) === 0) {
-//     update.checkingAmount = checkingAmount;
-//   }
-//   if (savingsAmount || parseFloat(savingsAmount) === 0) {
-//     update.savingsAmount = savingsAmount;
-//   }
-//   return User.findOneAndUpdate({ username }, update, { returnOriginal: false });
-// }
-
 //delete one user
 async function deleteUser(username) {
   try {
@@ -118,7 +96,6 @@ async function deleteUser(username) {
 
 module.exports = {
   create,
-  find,
   findOne,
   updateUserBalance,
   all,

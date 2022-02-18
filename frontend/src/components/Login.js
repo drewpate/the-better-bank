@@ -45,7 +45,7 @@ const Login = () => {
             setLoginError(true) +
             setTimeout(() => {
               setLoginError(false);
-            }, 2000)
+            }, 1500)
           );
         localStorage.setItem("SavedToken", token);
         localStorage.setItem("username", values.username);
