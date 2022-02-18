@@ -30,7 +30,7 @@ router.get("/", authMiddleWare, getAllUsers);
 router.get("/account/:username", authMiddleWare, getOneUser);
 
 //update checking/savings
-router.patch("/transactions", authMiddleWare, updateUserBalance);
+router.put("/transactions", authMiddleWare, updateUserBalance);
 
 //delete user account
 router.delete("/:username", authMiddleWare, deleteUser);

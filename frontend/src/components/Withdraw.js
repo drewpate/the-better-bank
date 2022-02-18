@@ -48,7 +48,7 @@ function Withdraw() {
     try {
       const username = localStorage.getItem("username");
       fetch("api/users/transactions", {
-        method: "PATCH",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("SavedToken"),

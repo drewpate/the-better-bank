@@ -47,7 +47,7 @@ function Deposit() {
     try {
       const username = localStorage.getItem("username");
       fetch("api/users/transactions", {
-        method: "PATCH",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("SavedToken"),
@@ -133,7 +133,7 @@ function Deposit() {
                   </div>
                 ) : null}
                 <br />
-                Amount
+                <p>Amount</p>
                 <br />
                 <Field
                   className="form-control"

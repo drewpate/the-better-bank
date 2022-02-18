@@ -67,7 +67,7 @@ function findOne(username) {
 
 //update user checking/savings
 async function updateUserBalance(username, checkingAmount, savingsAmount) {
-  const update = await User.findOneAndUpdate(
+  return User.findOneAndUpdate(
     { username },
     {
       $inc: {
@@ -77,7 +77,6 @@ async function updateUserBalance(username, checkingAmount, savingsAmount) {
     },
     { returnOriginal: false }
   );
-  return update;
 }
 
 //delete one user

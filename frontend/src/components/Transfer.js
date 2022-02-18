@@ -10,7 +10,6 @@ function Transfer() {
   const [savingsBalance, setSavingsBalance] = useState([]);
   const [selectedFromOption, setSelectedFromOption] = useState("fromChecking");
   const [selectedToOption, setSelectedToOption] = useState("toSavings");
-  const [transfer, setTransfer] = useState();
   const [showSuccessMessage, setShowSuccessMessage] = useState(false);
   const [showError, setShowError] = useState(false);
 
@@ -35,28 +34,28 @@ function Transfer() {
   }, [data.checkingBalance, data.savingsBalance]);
 
   const TransferSchema = Yup.object().shape({
-    depositAmount: Yup.number()
+    transferAmount: Yup.number()
       .required("Please enter an amount")
       .positive()
       .integer(),
   });
 
-  function handleUpdate(values, accountType) {
+  function handleUpdate(values, transactionType) {
     const accountUpdate =
-      accountType === "fromChecking"
+      transactionType === "fromChecking"
         ? {
             checkingBalance: -values.transferAmount,
-            savingsBalance: +values.transferAmount,
+            savingsBalance: values.transferAmount,
           }
         : {
-            checkingBalance: +values.transferAmount,
-            savingsBalance: -values.withdrawAmount,
+            checkingBalance: values.transferAmount,
+            savingsBalance: -values.transferAmount,
           };
-
+    console.log(accountUpdate);
     try {
       const username = localStorage.getItem("username");
       fetch("api/users/transactions", {
-        method: "PATCH",
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           Authorization: localStorage.getItem("SavedToken"),
@@ -84,11 +83,8 @@ function Transfer() {
             }}
             validationSchema={TransferSchema}
             onSubmit={(values, { resetForm }) => {
-              if (selectedFromOption === selectedToOption)
-                return setShowError(true);
               if (selectedFromOption === "fromChecking") {
                 handleUpdate(values, selectedFromOption);
-                setTransfer(values.transferAmount);
                 setCheckingBalance(checkingBalance - values.transferAmount);
                 setSavingsBalance(savingsBalance + values.transferAmount);
                 resetForm();
@@ -99,9 +95,9 @@ function Transfer() {
                   }, 1500)
                 );
               } else {
-                handleUpdate(values, selectedFromOption);
-                setTransfer(values.transferAmount);
-                setSavingsBalance(savingsBalance + values.transferAmount);
+                handleUpdate(values, selectedToOption);
+                setCheckingBalance(checkingBalance + values.transferAmount);
+                setSavingsBalance(savingsBalance - values.transferAmount);
                 resetForm();
                 return (
                   setShowSuccessMessage(true) +
@@ -124,7 +120,6 @@ function Transfer() {
                   name="ChooseFromAccount"
                   id="ChooseFromAccount"
                   className="form-control"
-                  value={selectedFromOption}
                   onChange={(e) => {
                     setSelectedFromOption(e.target.value);
                   }}
@@ -145,7 +140,6 @@ function Transfer() {
                 <Field
                   as="select"
                   name="ChooseToAccount"
-                  value={selectedToOption}
                   id="ChooseToAccount"
                   className="form-control"
                   onChange={(e) => {
@@ -177,7 +171,6 @@ function Transfer() {
                   className="form-control"
                   name="transferAmount"
                   id="transferAmount"
-                  value={transfer}
                   placeholder="Transfer Amount"
                   type="number"
                   default="0"
@@ -217,7 +210,7 @@ function Transfer() {
                       marginTop: 10,
                     }}
                   >
-                    <p>Deposit Sucessful</p>
+                    <p>Funds Transferred Sucessfully</p>
                   </div>
                 ) : null}
                 {showError ? (

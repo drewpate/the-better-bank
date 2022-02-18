@@ -45,7 +45,7 @@ const updateUserBalance = (req, res) => {
       req.body.savingsBalance
     )
     .then((user) => {
-      res.status(200).json({ msg: "Transaction successful" });
+      res.status(200).json(user);
     });
 };
 
